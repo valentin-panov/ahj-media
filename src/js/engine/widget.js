@@ -86,23 +86,29 @@ export default class Widget {
   }
 
   autoGeoTag() {
-    let geotag;
-    if (navigator.geolocation) {
-      console.log('Geo доступно');
-      navigator.geolocation.getCurrentPosition(positionDetected, positionNotDetected);
-
-      function positionDetected(position) {
-        geotag = `${position.coords.latitude}, ${position.coords.longitude}`;
-        console.log('autoGeoTag', geotag);
-      }
-      function positionNotDetected(err) {
+    this.getGeo()
+      .then((position) => {
+        console.log(position);
+        return `${position.coords.latitude}, ${position.coords.longitude}`;
+      })
+      .catch((err) => {
+        console.log(err);
         console.warn(`ERROR(${err.code}): ${err.message}`);
-        geotag = this.manualGeoTag();
+        return this.manualGeoTag();
+      });
+  }
+
+  getGeo() {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve(position),
+          (err) => reject(err)
+        );
+      } else {
+        reject(new Error('Geolocation is unavailable'));
       }
-    } else {
-      geotag = this.manualGeoTag();
-    }
-    return geotag;
+    });
   }
 
   manualGeoTag() {
