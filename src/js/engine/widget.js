@@ -64,7 +64,7 @@ export default class Widget {
     this.newEntryInput.focus();
   }
 
-  unitPush(form) {
+  async unitPush(form) {
     if (!this.checkFormValidity(form)) {
       return;
     }
@@ -75,7 +75,7 @@ export default class Widget {
       timestamp: formatDate(new Date()),
     };
 
-    data.geotag = this.autoGeoTag();
+    data.geotag = await this.autoGeoTag();
     console.log('unitPush: ', data.geotag);
 
     this.units.push(data);
@@ -85,10 +85,10 @@ export default class Widget {
     this.renderUnits();
   }
 
-  autoGeoTag() {
-    this.getGeo()
+  async autoGeoTag() {
+    await this.getGeo()
       .then((position) => {
-        console.log(position);
+        console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
         return `${position.coords.latitude}, ${position.coords.longitude}`;
       })
       .catch((err) => {
