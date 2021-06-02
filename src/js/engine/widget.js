@@ -76,7 +76,6 @@ export default class Widget {
     };
 
     data.geotag = await this.autoGeoTag();
-    console.log('unitPush: ', data.geotag);
 
     this.units.push(data);
     form.description.value = '';
@@ -86,16 +85,8 @@ export default class Widget {
   }
 
   async autoGeoTag() {
-    await this.getGeo()
-      .then((position) => {
-        console.log(`${position.coords.latitude}, ${position.coords.longitude}`);
-        return `${position.coords.latitude}, ${position.coords.longitude}`;
-      })
-      .catch((err) => {
-        console.log(err);
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-        return this.manualGeoTag();
-      });
+    const position = await this.getGeo();
+    return `${position.coords.latitude}, ${position.coords.longitude}`;
   }
 
   getGeo() {
