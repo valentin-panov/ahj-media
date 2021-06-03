@@ -29,7 +29,7 @@ function unit(data) {
         <span class="unit-text">${data.text}</span>
       </div>
       <div class="unit__footer">
-        <span class="unit-geotag">[${data.geotag}] &#128065;</span>
+        <span class="unit-geotag">[${data.geotag}]</span>&nbsp;&#128065;
       </div>
   `;
   return newUnit;

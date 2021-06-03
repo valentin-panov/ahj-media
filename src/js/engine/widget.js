@@ -153,7 +153,7 @@ export default class Widget {
       return;
     }
 
-    data.geotag = form.coords.value.replace(/\[|\]|\s*\+/g, '');
+    data.geotag = form.coords.value.replace(/\[|\]|\s*|\+/g, '');
     data.geotag = data.geotag.replace(/,/g, ', ');
     this.units.push(data);
     this.renderUnits();

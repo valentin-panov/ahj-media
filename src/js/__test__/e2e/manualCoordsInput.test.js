@@ -25,9 +25,9 @@ describe('timeline widget', () => {
 
     browser = await puppeteer.launch({
       // this should be commented for CI?
-      // headless: false, // show gui
-      // slowMo: 250,
-      // devtools: true, // show devTools
+      headless: false, // show gui
+      slowMo: 250,
+      devtools: true, // show devTools
     });
 
     page = await browser.newPage();
@@ -74,8 +74,10 @@ describe('timeline widget', () => {
     expect(name).toBe(param);
 
     const geotag = await page.$eval('span.unit-geotag', (el) => el.innerText);
-    let paramCleared = param.replace(/\[|\]|\s*\+/g, '');
-    paramCleared = paramCleared.replace(/,/g, ', ');
-    expect(geotag).toBe(paramCleared);
+    let expected = param.replace(/\[|\]|\s*|\+/g, '');
+    expected = expected.replace(/,/g, ', ');
+    expected = `[${expected}]`;
+    console.log(geotag, expected);
+    expect(geotag).toBe(expected);
   });
 });
