@@ -72,5 +72,10 @@ describe('timeline widget', () => {
 
     const name = await page.$eval('span.unit-text', (el) => el.innerText);
     expect(name).toBe(param);
+
+    const geotag = await page.$eval('span.unit-geotag', (el) => el.innerText);
+    let paramCleared = param.replace(/\[|\]|\s*\+/g, '');
+    paramCleared = paramCleared.replace(/,/g, ', ');
+    expect(geotag).toBe(paramCleared);
   });
 });
