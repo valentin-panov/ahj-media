@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 function container() {
   const newContainer = document.createElement('div');
   newContainer.classList.add('wrapper');
@@ -44,7 +45,7 @@ function unitForm() {
       
       <span class="modal__text">К сожалению, нам не удалось определить ваше местоположение, пожалуйста, дайте разрешение на использование геолокации, либо введите координаты вручную.</span>
       
-      <input class="form__input" type="text" name="coords" value="" required placeholder="Введите широту и долготу через запятую..">
+      <input class="form__input" type="text" name="coords" required placeholder="Введите координаты в формате 00.00000, 00.00000" pattern="^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$">
       
       <div class="form__input-button-holder">
         <button type="button" class="btn btn-cancel">Отмена</button>

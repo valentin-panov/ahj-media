@@ -2,6 +2,7 @@ import { unit, unitForm, container } from './template';
 import FORM_ERRORS from '../data/formErrors';
 import idGenetator from './idGenerator';
 import formatDate from './formatDate';
+// import setInputFilter from './setInputFilter';
 
 export default class Widget {
   constructor() {
@@ -54,6 +55,7 @@ export default class Widget {
   }
 
   renderUnits() {
+    this.allFormsClose();
     this.unitList.innerHTML = '';
 
     this.units.forEach((element) => {
@@ -64,7 +66,7 @@ export default class Widget {
     this.newEntryInput.focus();
   }
 
-  async unitPush(form) {
+  unitPush(form) {
     if (!this.checkFormValidity(form)) {
       return;
     }
@@ -75,18 +77,19 @@ export default class Widget {
       timestamp: formatDate(new Date()),
     };
 
-    data.geotag = await this.autoGeoTag();
-
-    this.units.push(data);
-    form.description.value = '';
-
-    this.allFormsClose();
-    this.renderUnits();
-  }
-
-  async autoGeoTag() {
-    const position = await this.getGeo();
-    return `${position.coords.latitude}, ${position.coords.longitude}`;
+    this.getGeo()
+      .then((position) => {
+        data.geotag = `${position.coords.latitude}, ${position.coords.longitude}`;
+      })
+      .then(() => {
+        form.description.value = '';
+        this.units.push(data);
+        this.renderUnits();
+      })
+      .catch(() => {
+        form.description.value = '';
+        this.manualGeoTagQuery(data);
+      });
   }
 
   getGeo() {
@@ -102,7 +105,7 @@ export default class Widget {
     });
   }
 
-  manualGeoTag() {
+  manualGeoTagQuery(data) {
     try {
       this.allFormsClose();
     } catch (e) {
@@ -111,8 +114,17 @@ export default class Widget {
 
     const newForm = unitForm();
     const parent = this.unitList;
+    const formElement = newForm.querySelector(`form`);
     document.body.append(newForm);
     this.modalPlace(parent, newForm, 'modal');
+    const coordInput = formElement.coords;
+    // setInputFilter(
+    //   coordInput,
+    //   (value) =>
+    //     /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
+    //       value
+    //     ) // REGEX COORD PATTERN
+    // );
 
     newForm.querySelector(`.btn-cancel`).addEventListener(
       'click',
@@ -126,12 +138,30 @@ export default class Widget {
       'click',
       (event) => {
         event.preventDefault();
-        return newForm.coords.value;
+        this.manualGeoTagPush(data, formElement);
+      },
+      false
+    );
+
+    formElement.addEventListener(
+      'submit',
+      (event) => {
+        event.preventDefault();
+        this.manualGeoTagPush(data, formElement);
       },
       false
     );
 
     newForm.querySelector(`input.form__input`).focus();
+  }
+
+  manualGeoTagPush(data, form) {
+    if (!this.checkFormValidity(form)) {
+      return;
+    }
+    data.geotag = form.coords.value;
+    this.units.push(data);
+    this.renderUnits();
   }
 
   // ! ---------------------
