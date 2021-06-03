@@ -1,7 +1,7 @@
 import Widget from '../engine/widget';
 import app from '../app';
 
-jest.mock('../engine/trello');
+jest.mock('../engine/widget');
 
 beforeEach(() => {
   Widget.mockClear();

@@ -24,8 +24,8 @@ export default class Widget {
   bindToDOM() {
     this.wrapper = document.querySelector('div.wrapper');
     this.unitList = document.querySelector('ul.unit-list');
-    this.newEntryForm = document.querySelector('form#newEntry');
-    this.newEntryInput = document.querySelector('input.form__input');
+    this.newEntryForm = document.querySelector('#newEntryForm');
+    this.newEntryInput = document.querySelector('#newEntryInput');
   }
 
   addWidgetListeners() {
@@ -114,17 +114,10 @@ export default class Widget {
 
     const newForm = unitForm();
     const parent = this.unitList;
-    const formElement = newForm.querySelector(`form`);
+    const formElement = newForm.querySelector(`#manualCoordsForm`);
     document.body.append(newForm);
     this.modalPlace(parent, newForm, 'modal');
     const coordInput = formElement.coords;
-    // setInputFilter(
-    //   coordInput,
-    //   (value) =>
-    //     /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/.test(
-    //       value
-    //     ) // REGEX COORD PATTERN
-    // );
 
     newForm.querySelector(`.btn-cancel`).addEventListener(
       'click',
@@ -152,14 +145,16 @@ export default class Widget {
       false
     );
 
-    newForm.querySelector(`input.form__input`).focus();
+    newForm.querySelector(`#manualCoordsInput`).focus();
   }
 
   manualGeoTagPush(data, form) {
     if (!this.checkFormValidity(form)) {
       return;
     }
-    data.geotag = form.coords.value;
+
+    data.geotag = form.coords.value.replace(/\[|\]|\s*\+/g, '');
+    data.geotag = data.geotag.replace(/,/g, ', ');
     this.units.push(data);
     this.renderUnits();
   }
