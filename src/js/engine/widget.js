@@ -1,3 +1,6 @@
+/* eslint-disable default-case */
+/* eslint-disable no-param-reassign */
+/* eslint-disable class-methods-use-this */
 import { unit, unitForm, container } from './template';
 import FORM_ERRORS from '../data/formErrors';
 import idGenetator from './idGenerator';
@@ -117,7 +120,6 @@ export default class Widget {
     const formElement = newForm.querySelector(`#manualCoordsForm`);
     document.body.append(newForm);
     this.modalPlace(parent, newForm, 'modal');
-    const coordInput = formElement.coords;
 
     newForm.querySelector(`.btn-cancel`).addEventListener(
       'click',
